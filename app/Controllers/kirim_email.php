@@ -2,28 +2,30 @@
 
 namespace App\Controllers;
 
+use App\Models\Email;
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\SMTP;
 use PHPMailer\PHPMailer\Exception;
 
 class Kirim_email extends BaseController
 {
+    private $email;
     public function __construct()
     {
+        $this->email = new Email();
         helper(['form']);
     }
 
     public function index()
     {
-        return view('v_form_kirim_email');
+        $data = $this->email->getEmail(date("Y-m-d H:i:s"));
+        $this->send($data);
+
+        return view('front');
     }
 
-    public function send()
+    public function send($emails)
     {
-        $to                 = $this->request->getPost('to');
-        $subject             = $this->request->getPost('subject');
-        $message             = $this->request->getPost('message');
-
         $mail = new PHPMailer(true);
 
         try {
@@ -31,25 +33,26 @@ class Kirim_email extends BaseController
             $mail->isSMTP();
             $mail->Host       = 'smtp.googlemail.com';
             $mail->SMTPAuth   = true;
-            $mail->Username   = 'rifkymr@upi.edu'; // silahkan ganti dengan alamat email Anda
-            $mail->Password   = 'SL(starlight)'; // silahkan ganti dengan password email Anda
+            $mail->Username   = 'aldisaepurahman@gmail.com'; // silahkan ganti dengan alamat email Anda
+            $mail->Password   = 'aldi5aepurahman'; // silahkan ganti dengan password email Anda
             $mail->SMTPSecure = 'ssl';
             $mail->Port       = 465;
 
-            $mail->setFrom('rifkymr@upi.edu', 'Test email'); // silahkan ganti dengan alamat email Anda
-            $mail->addAddress($to);
-            $mail->addReplyTo('rifkymr@upi.edu', 'Test email'); // silahkan ganti dengan alamat email Anda
-            // Content
-            $mail->isHTML(true);
-            $mail->Subject = $subject;
-            $mail->Body    = $message;
+            $mail->setFrom('aldisaepurahman@gmail.com', 'Test email'); // silahkan ganti dengan alamat email Anda
+            $mail->addReplyTo('aldisaep@upi.edu', 'Test email'); // silahkan ganti dengan alamat email Anda
 
-            $mail->send();
+            foreach ($emails as $data) {
+                $mail->addAddress($data['email']);
+                // Content
+                $mail->isHTML(true);
+                $mail->Subject = $data['subject'];
+                $mail->Body    = $data['isi_email'];
+    
+                $mail->send();
+            }
             session()->setFlashdata('success', 'Send Email successfully');
-            return redirect()->to('/kirim_email');
         } catch (Exception $e) {
             session()->setFlashdata('error', "Send Email failed. Error: " . $mail->ErrorInfo);
-            return redirect()->to('/kirim_email');
         }
     }
 }
