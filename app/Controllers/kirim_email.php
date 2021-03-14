@@ -33,13 +33,13 @@ class Kirim_email extends BaseController
             $mail->isSMTP();
             $mail->Host       = 'smtp.googlemail.com';
             $mail->SMTPAuth   = true;
-            $mail->Username   = 'aldisaepurahman@gmail.com'; // silahkan ganti dengan alamat email Anda
-            $mail->Password   = 'aldi5aepurahman'; // silahkan ganti dengan password email Anda
+            $mail->Username   = 'aldisaep@upi.edu'; // silahkan ganti dengan alamat email Anda
+            $mail->Password   = 'aldi5aep'; // silahkan ganti dengan password email Anda
             $mail->SMTPSecure = 'ssl';
             $mail->Port       = 465;
 
-            $mail->setFrom('aldisaepurahman@gmail.com', 'Test email'); // silahkan ganti dengan alamat email Anda
-            $mail->addReplyTo('aldisaep@upi.edu', 'Test email'); // silahkan ganti dengan alamat email Anda
+            $mail->setFrom('aldisaep@upi.edu', 'Test email'); // silahkan ganti dengan alamat email Anda
+            // $mail->addReplyTo('aldisaepuraha@upi.edu', 'Test email'); // silahkan ganti dengan alamat email Anda
 
             foreach ($emails as $data) {
                 $mail->addAddress($data['email']);
